@@ -1,21 +1,17 @@
-'use strict';
+"use strict";
 
-var imgArray = [
-'airmax-jump.png',
-'airmax-on-foot.png',
-'airmax-playground.png',
-'airmax-top-view.png',
-'airmax.png']
+var imgNike = ['airmax-jump.png','airmax-on-foot.png','airmax-playground.png','airmax-top-view.png','airmax.png']
 
 const slider = document.getElementById('slider');
-let step = 0;
+let toStep = 0;
 
-function showSlider(){
-	if (step === imgArray.length) {
-		step = 0;
-	}
-	slider.src = `i/${imgArray[step]}`;
-	step += 1;
+function showSlide() {
+  if (toStep === imgNike.length) {
+    toStep = 0;
+}
+  
+  slider.src = `i/${imgNike[toStep]}`;
+	toStep += 1;
 }
 
-setInterval(showSlider, 5000);
+setInterval(showSlide, 5000);
