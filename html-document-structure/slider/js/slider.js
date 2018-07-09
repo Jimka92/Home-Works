@@ -1,46 +1,58 @@
-'use strict';
+window.addEventListener('DOMContentLoaded', () => {
 
-function Slider(mainMenu) {
-	mainMenu.querySelector('li').classList.add('slide-current');
-	const next = mainMenu.querySelector('a[data-action="next"]');
-	const prev = mainMenu.querySelector('a[data-action="prev"]');
-	const first = mainMenu.querySelector('a[data-action="first"]');
-	const last = mainMenu.querySelector('a[data-action="last"]');
+  const sliders = document.querySelectorAll('.slider');
 
-	prev.classList.add('disabled');
-	first.classList.add('disabled');
+  for (let slider of sliders) {
+    initSlider(slider);
+  }
 
-	next.addEventListener('click', (event) => moveSlider(true));
-	prev.addEventListener('click', (event) => moveSlider(false));
-	first.addEventListener('click', (event) => lastSlider(false));
-	last.addEventListener('click', (event) => lastSlider(true));
+  function initSlider(slider) {
+    const sliderNav = slider.querySelector('.slider-nav');
+    const first = sliderNav.querySelector('[data-action="first"]');
+    const prev = sliderNav.querySelector('[data-action="prev"]');
+    const next = sliderNav.querySelector('[data-action="next"]');
+    const last = sliderNav.querySelector('[data-action="last"]');
+    const slides = slider.querySelector('.slides');
 
-	function moveSlider(activeSlide) {
-		const currentSlide = mainMenu.querySelector('.slide-current');
-		const activatedSlide = activeSlide ? currentSlide.nextElementSibling : currentSlide.previousElementSibling;
+    slides.firstElementChild.classList.add('slide-current');
 
-		currentSlide.classList.remove('slide-current');
-		activatedSlide.classList.add('slide-current'); 
+    let currentSlide = slides.querySelector('.slide-current');
 
-		next.classList.toggle('disabled', activatedSlide.nextElementSibling == null);
-		last.classList.toggle('disabled', activatedSlide.nextElementSibling == null);
-		prev.classList.toggle('disabled', activatedSlide.previousElementSibling == null);
-		first.classList.toggle('disabled', activatedSlide.previousElementSibling == null);
-}
+    updateControl(currentSlide);
 
-	function lastSlider(activeSlide) {
-		const currentSlide = mainMenu.querySelector('.slide-current');
-		const activatedSlide = activeSlide ? currentSlide.parentElement.lastElementChild : currentSlide.parentElement.firstElementChild;
-		currentSlide.classList.remove('slide-current');
-		activatedSlide.classList.add('slide-current'); 
+    sliderNav.addEventListener('click', (event) => {
+      if (event.target.classList.contains('disabled')) {
+        return;
+      }
 
-		next.classList.toggle('disabled', activatedSlide.nextElementSibling == null);
-		last.classList.toggle('disabled', activatedSlide.nextElementSibling == null);
-		prev.classList.toggle('disabled', activatedSlide.previousElementSibling == null);
-		first.classList.toggle('disabled', activatedSlide.previousElementSibling == null);
-	}
-}
+      currentSlide.classList.remove('slide-current');
 
-const slider = document.querySelectorAll('.slider');
-Array.from(slider).forEach(item => Slider(item));
+      switch(event.target) {
+        case first:
+          currentSlide = slides.firstElementChild;
+          break;
+        case prev:
+          currentSlide = currentSlide.previousElementSibling;
+          break;
+        case next:
+          currentSlide = currentSlide.nextElementSibling;
+          break;
+        case last:
+          currentSlide = slides.lastElementChild;
+          break;
+      }
 
+      updateControl(currentSlide);
+
+      currentSlide.classList.add('slide-current');
+    });
+
+    function updateControl(currentSlide) {
+      first.classList.toggle('disabled', !currentSlide.previousElementSibling);
+      prev.classList.toggle('disabled', !currentSlide.previousElementSibling);
+      next.classList.toggle('disabled', !currentSlide.nextElementSibling);
+      last.classList.toggle('disabled', !currentSlide.nextElementSibling);
+    }
+  }
+
+});
